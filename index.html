@@ -5,18 +5,78 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Login - Mercadinho da Vani</title>
   <style>
-    :root{--primary:#2e8b57;--accent:#ffd400;--bg:#f6f7f3}
-    body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#111;display:flex;align-items:center;justify-content:center;height:100vh}
-    .card{width:360px;background:#fff;padding:18px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.06)}
-    input,button{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:1px solid #e6e6e6}
-    button{background:var(--primary);color:#fff;border:none;font-weight:700;cursor:pointer}
-    a{color:var(--primary);text-decoration:none}
-    .small{font-size:13px;color:#666;margin-top:8px}
+    :root {
+      --primary: #2e8b57;
+      --accent: #ffd400;
+      --bg: #f6f7f3;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, Arial;
+      background: var(--bg);
+      color: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .card {
+      width: 360px;
+      background: #fff;
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+      text-align: center;
+    }
+    .logo {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 12px;
+      border: 2px solid var(--primary);
+    }
+    h2 {
+      margin: 0;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #e6e6e6;
+      font-size: 15px;
+    }
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .small {
+      font-size: 13px;
+      color: #666;
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
   <div class="card">
+    <img src="2.png" alt="Logo" class="logo">
     <h2>Mercadinho da Vani</h2>
+
+    <!-- Tela de Cadastro -->
     <div id="registerView">
       <input id="regName" placeholder="Nome completo" />
       <input id="regEmail" placeholder="E-mail" />
@@ -26,6 +86,7 @@
       <div class="small">Já tem conta? <a href="#" id="showLogin">Entrar</a></div>
     </div>
 
+    <!-- Tela de Login -->
     <div id="loginView" style="display:none">
       <input id="loginEmail" placeholder="E-mail" />
       <input id="loginPassword" type="password" placeholder="Senha" />
@@ -34,11 +95,12 @@
     </div>
   </div>
 
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script>
-    // seu firebaseConfig
+    // Configuração do Firebase
     var firebaseConfig = {
       apiKey: "AIzaSyBNNCCbI8obZEOGtp1EcT7wn-_h6X_EPMY",
       authDomain: "ganheinvista.firebaseapp.com",
@@ -50,32 +112,48 @@
       measurementId: "G-6P3MZJVMQR"
     };
     firebase.initializeApp(firebaseConfig);
+
     const auth = firebase.auth();
     const db = firebase.database();
-
     const $ = id => document.getElementById(id);
 
-    $('showLogin').onclick = e => { e.preventDefault(); $('registerView').style.display='none'; $('loginView').style.display='block'; }
-    $('showRegister').onclick = e => { e.preventDefault(); $('loginView').style.display='none'; $('registerView').style.display='block'; }
+    // alternar telas
+    $('showLogin').onclick = e => {
+      e.preventDefault();
+      $('registerView').style.display = 'none';
+      $('loginView').style.display = 'block';
+    }
+    $('showRegister').onclick = e => {
+      e.preventDefault();
+      $('loginView').style.display = 'none';
+      $('registerView').style.display = 'block';
+    }
 
+    // cadastro
     $('btnRegister').onclick = async () => {
       const name = $('regName').value.trim();
       const email = $('regEmail').value.trim();
       const pass = $('regPassword').value;
       const image = $('regImagePath').value.trim() || 'images/usuario.png';
-      if(!name || !email || !pass) return alert('Preencha todos os campos');
-      try{
+      if (!name || !email || !pass) return alert('Preencha todos os campos');
+
+      try {
         const c = await auth.createUserWithEmailAndPassword(email, pass);
-        await db.ref('users/'+c.user.uid).set({name,email,image});
-        window.location.href='mercado.html';
-      }catch(err){ alert(err.message) }
+        await db.ref('users/' + c.user.uid).set({ name, email, image });
+        window.location.href = 'mercado.html';
+      } catch (err) {
+        alert(err.message);
+      }
     };
 
+    // login
     $('btnLogin').onclick = async () => {
-      try{
+      try {
         await auth.signInWithEmailAndPassword($('loginEmail').value, $('loginPassword').value);
-        window.location.href='mercado.html';
-      }catch(err){ alert(err.message) }
+        window.location.href = 'mercado.html';
+      } catch (err) {
+        alert(err.message);
+      }
     };
   </script>
 </body>
