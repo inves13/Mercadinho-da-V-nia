@@ -104,27 +104,27 @@
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // PRODUTOS (lista completa)
+    // PRODUTOS (imagens PNG padronizadas)
     const products = [
-      {id:'banana',name:'Banana (dúzia)',price:8.50,image:'images/banana.jpg'},
-      {id:'maca',name:'Maçã (kg)',price:7.50,image:'images/maca.jpg'},
-      {id:'laranja',name:'Laranja (kg)',price:3.20,image:'images/laranja.jpg'},
-      {id:'tangerina',name:'Tangerina (kg)',price:3.40,image:'images/tangerina.jpg'},
-      {id:'limao',name:'Limão (kg)',price:4.00,image:'images/limao.jpg'},
-      {id:'abacate',name:'Abacate (kg)',price:6.50,image:'images/abacate.jpg'},
-      {id:'goiaba',name:'Goiaba (kg)',price:5.00,image:'images/goiaba.jpg'},
-      {id:'uva',name:'Uva (kg)',price:12.00,image:'images/uva.jpg'},
-      {id:'abacaxi',name:'Abacaxi (un)',price:7.00,image:'images/abacaxi.jpg'},
-      {id:'beterraba',name:'Beterraba (kg)',price:4.50,image:'images/beterraba.jpg'},
-      {id:'cenoura',name:'Cenoura (kg)',price:4.00,image:'images/cenoura.jpg'},
-      {id:'batatadoce',name:'Batata Doce (kg)',price:5.50,image:'images/batatadoce.jpg'},
-      {id:'batatinha',name:'Batatinha (kg)',price:6.00,image:'images/batatinha.jpg'},
-      {id:'cebola_branca',name:'Cebola Branca (kg)',price:5.00,image:'images/cebola_branca.jpg'},
-      {id:'cebola_vermelha',name:'Cebola Vermelha (kg)',price:5.50,image:'images/cebola_vermelha.jpg'},
-      {id:'coentro',name:'Coentro (un)',price:1.50,image:'images/coentro.jpg'},
-      {id:'alface',name:'Alface (un)',price:2.20,image:'images/alface.jpg'},
-      {id:'abobora',name:'Abóbora (kg)',price:3.80,image:'images/abobora.jpg'},
-      {id:'pepino',name:'Pepino (kg)',price:4.20,image:'images/pepino.jpg'}
+      {id:'banana',name:'Banana (dúzia)',price:8.50,image:'images/banana.png'},
+      {id:'maca',name:'Maçã (kg)',price:7.50,image:'images/maca.png'},
+      {id:'laranja',name:'Laranja (kg)',price:3.20,image:'images/laranja.png'},
+      {id:'tangerina',name:'Tangerina (kg)',price:3.40,image:'images/tangerina.png'},
+      {id:'limao',name:'Limão (kg)',price:4.00,image:'images/limao.png'},
+      {id:'abacate',name:'Abacate (kg)',price:6.50,image:'images/abacate.png'},
+      {id:'goiaba',name:'Goiaba (kg)',price:5.00,image:'images/goiaba.png'},
+      {id:'uva',name:'Uva (kg)',price:12.00,image:'images/uva.png'},
+      {id:'abacaxi',name:'Abacaxi (un)',price:7.00,image:'images/abacaxi.png'},
+      {id:'beterraba',name:'Beterraba (kg)',price:4.50,image:'images/beterraba.png'},
+      {id:'cenoura',name:'Cenoura (kg)',price:4.00,image:'images/cenoura_b64047d1-0a34-420d-8fc7-40278c89b558.png'},
+      {id:'batatadoce',name:'Batata Doce (kg)',price:5.50,image:'images/batatadoce.png'},
+      {id:'batatinha',name:'Batatinha (kg)',price:6.00,image:'images/batatinha.png'},
+      {id:'cebola_branca',name:'Cebola Branca (kg)',price:5.00,image:'images/cebola_branca.png'},
+      {id:'cebola_vermelha',name:'Cebola Vermelha (kg)',price:5.50,image:'images/cebola_vermelha.png'},
+      {id:'coentro',name:'Coentro (un)',price:1.50,image:'images/coentro.png'},
+      {id:'alface',name:'Alface (un)',price:2.20,image:'images/alface.png'},
+      {id:'abobora',name:'Abóbora (kg)',price:3.80,image:'images/abobora.png'},
+      {id:'pepino',name:'Pepino (kg)',price:4.20,image:'images/pepino.png'}
     ];
 
     let currentUser = null;
