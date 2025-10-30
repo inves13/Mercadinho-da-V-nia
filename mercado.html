@@ -5,232 +5,153 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Mercadinho da Vani</title>
   <style>
-    :root{--primary:#2e8b57;--accent:#ffd400;--bg:#f6f7f3}
-    body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#111}
-    .container{max-width:980px;margin:16px auto;padding:12px}
-    header{display:flex;align-items:center;gap:12px}
-    header h1{margin:0;font-size:20px}
-    .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,0.06);margin-bottom:12px}
-    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-    .product{text-align:center;padding:10px;border-radius:10px;border:1px solid #eee}
-    .product img{width:100%;height:120px;object-fit:cover;border-radius:8px}
-    input,button{padding:8px;border-radius:8px;border:1px solid #e6e6e6}
-    button{cursor:pointer}
-    .row{display:flex;gap:10px;align-items:center}
-    nav.bottom{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:8px 0}
-    nav.bottom button{background:transparent;border:none;font-weight:700}
-    .hidden{display:none}
-    .small{font-size:13px;color:#666}
+    :root{
+      --primary:#2e8b57;
+      --accent:#ffd400;
+      --bg:#f9f9f9;
+      --text:#333;
+    }
+    body{
+      font-family:'Arial',sans-serif;
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+    }
+    header{
+      background:var(--primary);
+      color:white;
+      padding:15px;
+      text-align:center;
+      font-size:22px;
+      font-weight:bold;
+      box-shadow:0 2px 4px rgba(0,0,0,0.2);
+    }
+    .search-bar{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:10px;
+      background:white;
+      box-shadow:0 2px 5px rgba(0,0,0,0.1);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+    .search-bar input{
+      width:90%;
+      padding:10px;
+      border:2px solid var(--primary);
+      border-radius:8px;
+      outline:none;
+      font-size:16px;
+    }
+    .container{
+      padding:10px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+      gap:10px;
+    }
+    .product{
+      background:white;
+      border-radius:10px;
+      box-shadow:0 2px 4px rgba(0,0,0,0.1);
+      text-align:center;
+      padding:10px;
+      transition:transform 0.2s;
+    }
+    .product:hover{
+      transform:scale(1.03);
+    }
+    .product img{
+      width:100%;
+      height:100px;
+      object-fit:cover;
+      border-radius:8px;
+    }
+    .product h3{
+      font-size:16px;
+      margin:8px 0 4px;
+    }
+    .product p{
+      color:green;
+      font-weight:bold;
+      margin:0;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div style="width:44px;height:44px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">V</div>
-      <div>
-        <h1>Mercadinho da Vani</h1>
-        <div class="small" id="greeting">Carregando...</div>
-      </div>
-      <div style="margin-left:auto">
-        <button id="btnLogout">Sair</button>
-      </div>
-    </header>
+  <header>
+    🛒 Mercadinho da Vani
+  </header>
 
-    <section id="dashboard">
-      <div id="pageProducts" class="card">
-        <h3>Produtos</h3>
-        <div id="productsList" class="products-grid"></div>
-        <div class="row" style="margin-top:12px">
-          <div style="font-weight:700">Total: R$ <span id="cartTotal">0.00</span></div>
-          <div style="margin-left:auto"><button id="btnCheckout">Finalizar compra</button></div>
-        </div>
-      </div>
-
-      <div id="pageDeposit" class="card hidden" style="text-align:center">
-        <h3>Depósito via Pix</h3>
-        <div style="background:var(--primary);color:#fff;padding:14px;border-radius:12px;margin:12px 0;word-break:break-all">
-          <b>Chave Pix:</b><br>
-          <span id="pixKey">00020126810014br.gov.bcb.pix01367afe98b1-ad17-4884-be4d-9a77d0d107ca0219mercadinho da Vania5204000053039865802BR5919Luis Nunes de Jesus6009Sao Paulo610901227-20062230519daqr727713149873566630468CD</span>
-        </div>
-        <button id="btnCopyPix" style="background:var(--accent);border:none;padding:10px 18px;font-weight:700;border-radius:8px;cursor:pointer">Copiar chave Pix</button>
-      </div>
-
-      <div id="pageOrders" class="card hidden">
-        <h3>Extrato de Pedidos</h3>
-        <div id="ordersList">Nenhum pedido encontrado.</div>
-      </div>
-
-      <div id="pageProfile" class="card hidden">
-        <h3>Perfil</h3>
-        <div class="row">
-          <img id="profileImage" src="" alt="foto" style="width:92px;height:92px;border-radius:10px;object-fit:cover" />
-          <div style="margin-left:12px">
-            <div id="profileName" style="font-weight:700"></div>
-            <div id="profileEmail" class="small"></div>
-          </div>
-        </div>
-        <div style="margin-top:10px">
-          <input id="editImagePath" placeholder="images/usuario.png" />
-          <button id="btnSaveProfile">Salvar imagem</button>
-        </div>
-      </div>
-
-    </section>
+  <div class="search-bar">
+    <input type="text" id="search" placeholder="🔍 Buscar produto...">
   </div>
 
-  <nav class="bottom">
-    <button data-page="products">Produtos</button>
-    <button data-page="deposit">Depósito</button>
-    <button data-page="orders">Extrato</button>
-    <button data-page="profile">Perfil</button>
-  </nav>
-
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <div class="container" id="product-list"></div>
 
   <script>
-    var firebaseConfig = {
-      apiKey: "AIzaSyBNNCCbI8obZEOGtp1EcT7wn-_h6X_EPMY",
-      authDomain: "ganheinvista.firebaseapp.com",
-      databaseURL: "https://ganheinvista-default-rtdb.firebaseio.com",
-      projectId: "ganheinvista",
-      storageBucket: "ganheinvista.firebasestorage.app",
-      messagingSenderId: "724834283527",
-      appId: "1:724834283527:web:9e005772a2cddb2f76baa2",
-      measurementId: "G-6P3MZJVMQR"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-
-    // PRODUTOS (imagens PNG padronizadas)
     const products = [
-      {id:'banana',name:'Banana (dúzia)',price:8.50,5.png'},
-      {id:'maca',name:'Maçã (kg)',price:7.50,image:'images/maca.png'},
-      {id:'laranja',name:'Laranja (kg)',price:3.20,image:'images/laranja.png'},
-      {id:'tangerina',name:'Tangerina (kg)',price:3.40,image:'images/tangerina.png'},
-      {id:'limao',name:'Limão (kg)',price:4.00,image:'images/limao.png'},
-      {id:'abacate',name:'Abacate (kg)',price:6.50,image:'images/abacate.png'},
-      {id:'goiaba',name:'Goiaba (kg)',price:5.00,image:'images/goiaba.png'},
-      {id:'uva',name:'Uva (kg)',price:12.00,image:'images/uva.png'},
-      {id:'abacaxi',name:'Abacaxi (un)',price:7.00,image:'images/abacaxi.png'},
-      {id:'beterraba',name:'Beterraba (kg)',price:4.50,image:'4.png'},
-      {id:'cenoura',name:'Cenoura (kg)',price:4.00,image:'images/cenoura_b64047d1-0a34-420d-8fc7-40278c89b558.png'},
-      {id:'batatadoce',name:'Batata Doce (kg)',price:5.50,image:'images/batatadoce.png'},
-      {id:'batatinha',name:'Batatinha (kg)',price:6.00,image:'images/batatinha.png'},
-      {id:'cebola_branca',name:'Cebola Branca (kg)',price:5.00,image:'images/cebola_branca.png'},
-      {id:'cebola_vermelha',name:'Cebola Vermelha (kg)',price:5.50,image:'images/cebola_vermelha.png'},
-      {id:'coentro',name:'Coentro (un)',price:1.50,image:'verduras-Coentro-1586828924301.png'},
-      {id:'alface',name:'Alface (un)',price:2.20,image:'2.png'},
-      {id:'abobora',name:'Abóbora (kg)',price:3.80,image:'images/abobora.png'},
-      {id:'pepino',name:'Pepino (kg)',price:4.20,image:'images/pepino.png'}
+      {id:'banana', name:'Banana (dúzia)', price:8.50, image:'images/banana.png'},
+      {id:'maca', name:'Maçã (kg)', price:9.00, image:'images/maca.png'},
+      {id:'laranja', name:'Laranja (kg)', price:7.00, image:'images/laranja.png'},
+      {id:'abacaxi', name:'Abacaxi (unidade)', price:6.00, image:'images/abacaxi.png'},
+      {id:'melancia', name:'Melancia (kg)', price:5.00, image:'images/melancia.png'},
+      {id:'mamao', name:'Mamão (kg)', price:5.80, image:'images/mamao.png'},
+      {id:'coco', name:'Coco verde (unidade)', price:4.50, image:'images/coco.png'},
+      {id:'limao', name:'Limão (kg)', price:4.00, image:'images/limao.png'},
+      {id:'abacate', name:'Abacate (kg)', price:7.20, image:'images/abacate.png'},
+      {id:'uva', name:'Uva (kg)', price:9.90, image:'images/uva.png'},
+      {id:'batata', name:'Batata (kg)', price:4.80, image:'images/batata.png'},
+      {id:'cebola', name:'Cebola (kg)', price:4.00, image:'images/cebola.png'},
+      {id:'alho', name:'Alho (100g)', price:3.50, image:'images/alho.png'},
+      {id:'beterraba', name:'Beterraba (kg)', price:4.50, image:'images/beterraba.png'},
+      {id:'cenoura', name:'Cenoura (kg)', price:4.20, image:'images/cenoura.png'},
+      {id:'tomate', name:'Tomate (kg)', price:6.80, image:'images/tomate.png'},
+      {id:'pimentao', name:'Pimentão (kg)', price:5.50, image:'images/pimentao.png'},
+      {id:'quiabo', name:'Quiabo (kg)', price:7.30, image:'images/quiabo.png'},
+      {id:'couve', name:'Couve (maço)', price:3.00, image:'images/couve.png'},
+      {id:'repolho', name:'Repolho (kg)', price:4.60, image:'images/repolho.png'},
+      {id:'pepino', name:'Pepino (kg)', price:4.40, image:'images/pepino.png'},
+      {id:'chuchu', name:'Chuchu (kg)', price:3.50, image:'images/chuchu.png'},
+      {id:'alface', name:'Alface (pé)', price:2.50, image:'images/alface.png'},
+      {id:'milho', name:'Milho verde (espiga)', price:2.00, image:'images/milho.png'},
+      {id:'maracuja', name:'Maracujá (kg)', price:8.20, image:'images/maracuja.png'},
+      {id:'manga', name:'Manga (kg)', price:6.50, image:'images/manga.png'},
+      {id:'goiaba', name:'Goiaba (kg)', price:5.80, image:'images/goiaba.png'},
+      {id:'melao', name:'Melão (kg)', price:6.00, image:'images/melao.png'}
     ];
 
-    let currentUser = null;
-    let cart = {};
-    const $ = id => document.getElementById(id);
+    const container = document.getElementById('product-list');
+    const search = document.getElementById('search');
 
-    auth.onAuthStateChanged(async u=>{
-      if(!u){ window.location.href='index.html'; return; }
-      currentUser = u;
-      const snap = await db.ref('users/'+u.uid).once('value');
-      const p = snap.val() || {};
-      document.getElementById('greeting').textContent = 'Bem-vindo, ' + (p.name||'');
-      document.getElementById('profileName').textContent = p.name || '';
-      document.getElementById('profileEmail').textContent = p.email || '';
-      document.getElementById('profileImage').src = p.image || 'images/usuario.png';
-      renderProducts();
-      loadOrders();
-    });
-
-    document.getElementById('btnLogout').onclick = ()=> auth.signOut();
-
-    function renderProducts(){
-      const list = document.getElementById('productsList');
-      list.innerHTML = '';
-      products.forEach(p=>{
-        const div = document.createElement('div');
-        div.className = 'product';
-        div.innerHTML = `
-          <img src="${p.image}" alt="${p.name}" />
-          <div style="font-weight:700">${p.name}</div>
-          <div>R$ ${p.price.toFixed(2)}</div>
-          <input type="number" min="0" placeholder="Qtd" data-id="${p.id}" style="width:80px;margin-top:8px" />
-        <div style="margin-top:8px"><b>Subtotal:</b> R$ <span data-sub="${p.id}">0.00</span></div>
+    function renderProducts(list){
+      container.innerHTML = '';
+      if(list.length === 0){
+        container.innerHTML = '<p style="grid-column:1/-1;text-align:center;">Nenhum produto encontrado.</p>';
+        return;
+      }
+      list.forEach(p=>{
+        const div=document.createElement('div');
+        div.className='product';
+        div.innerHTML=`
+          <img src="${p.image}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p>R$ ${p.price.toFixed(2).replace('.',',')}</p>
         `;
-        list.appendChild(div);
-      });
-      list.querySelectorAll('input').forEach(inp=>{
-        inp.oninput = () => { cart[inp.dataset.id] = +inp.value || 0; updateTotal(); }
-      });
-      updateTotal();
-    }
-
-    function updateTotal(){
-      let t = 0;
-      products.forEach(p=>{
-        const q = cart[p.id]||0;
-        const sub = q * p.price;
-        const el = document.querySelector('[data-sub="'+p.id+'"]');
-        if(el) el.textContent = sub.toFixed(2);
-        t += sub;
-      });
-      document.getElementById('cartTotal').textContent = t.toFixed(2);
-    }
-
-    document.getElementById('btnCheckout').onclick = async () => {
-      if(!currentUser) return alert('Faça login antes');
-      const items = products.filter(p => (cart[p.id]||0) > 0).map(p => ({ name:p.name, qty: cart[p.id], price: p.price, subtotal: p.price * cart[p.id] }));
-      if(items.length === 0) return alert('Nenhum produto selecionado');
-      const total = items.reduce((a,b)=>a+b.subtotal,0);
-      await db.ref('orders/'+currentUser.uid).push({items, total, createdAt: new Date().toISOString()});
-      alert('Pedido salvo! Em "Extrato" você pode verificar o pedido.');
-      cart = {}; renderProducts(); loadOrders();
-    };
-
-    async function loadOrders(){
-      if(!currentUser) return;
-      const out = document.getElementById('ordersList');
-      out.innerHTML = 'Carregando...';
-      const snap = await db.ref('orders/'+currentUser.uid).once('value');
-      const v = snap.val();
-      if(!v){ out.innerHTML = 'Nenhum pedido.'; return; }
-      out.innerHTML = '';
-      Object.values(v).forEach(o=>{
-        const card = document.createElement('div'); card.className='card';
-        const itemsHtml = o.items.map(i=> `${i.qty}x ${i.name} — R$ ${i.subtotal.toFixed(2)}` ).join('<br>');
-        card.innerHTML = `<b>${new Date(o.createdAt).toLocaleString()}</b><br>${itemsHtml}<br><b>Total:</b> R$ ${o.total.toFixed(2)}`;
-        out.appendChild(card);
+        container.appendChild(div);
       });
     }
 
-    document.getElementById('btnSaveProfile').onclick = async ()=>{
-      if(!currentUser) return alert('Login primeiro');
-      const pth = document.getElementById('editImagePath').value.trim() || 'images/usuario.png';
-      await db.ref('users/'+currentUser.uid+'/image').set(pth);
-      document.getElementById('profileImage').src = pth;
-      alert('Imagem atualizada!');
-    };
+    // Renderiza todos os produtos ao abrir
+    renderProducts(products);
 
-    document.querySelectorAll('nav.bottom button').forEach(b=>{
-      b.onclick = ()=>{
-        const page = b.dataset.page;
-        ['pageProducts','pageDeposit','pageOrders','pageProfile'].forEach(id=> {
-          const el = document.getElementById(id);
-          if(el) el.classList.add('hidden');
-        });
-        if(page === 'products') document.getElementById('pageProducts').classList.remove('hidden');
-        if(page === 'deposit') document.getElementById('pageDeposit').classList.remove('hidden');
-        if(page === 'orders') document.getElementById('pageOrders').classList.remove('hidden');
-        if(page === 'profile') document.getElementById('pageProfile').classList.remove('hidden');
-      };
+    // Filtro de busca
+    search.addEventListener('input', e=>{
+      const text = e.target.value.toLowerCase();
+      const filtered = products.filter(p=>p.name.toLowerCase().includes(text));
+      renderProducts(filtered);
     });
-
-    document.getElementById('btnCopyPix').onclick = ()=> {
-      const k = document.getElementById('pixKey').textContent;
-      navigator.clipboard.writeText(k).then(()=> alert('Chave Pix copiada!'));
-    };
   </script>
 </body>
 </html>
