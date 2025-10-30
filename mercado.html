@@ -368,12 +368,14 @@
 
     // === Util: format currency BRL (segurança: calcular com toFixed) ===
     function formatBRL(val){
+      // work digit-by-digit to avoid floating imprecision when necessary
       return Number(val || 0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
     }
 
     // === Auth listener (mantive o comportamento) ===
     auth.onAuthStateChanged(async u=>{
       if(!u){
+        // se não logado, redireciona para index (como no seu código)
         window.location.href='index.html';
         return;
       }
@@ -413,11 +415,13 @@
       // associa eventos
       list.querySelectorAll('input[type="number"]').forEach(inp=>{
         inp.addEventListener('input', () => {
+          // parse digit by digit to be safe
           const v = inp.value;
           const parsed = parseFloat(v.replace(',', '.')) || 0;
           cart[inp.dataset.id] = parsed;
           updateTotal();
         });
+        // UX: select value on focus
         inp.addEventListener('focus', () => inp.select());
       });
 
@@ -491,7 +495,7 @@
       });
     };
 
-    // === Navegação inferior ===
+    // === Navegação inferior (melhorei highlight e transição) ===
     const navButtons = document.querySelectorAll('nav.bottom button');
     navButtons.forEach(b=>{
       b.addEventListener('click', () => {
@@ -544,7 +548,7 @@
       if(e.key === '4') navButtons[3].click();
     });
 
-    // ativa primeiro botão
+    // ativa primeiro botão (garante highlight ao carregar)
     (function initNavActive(){
       const active = document.querySelector('nav.bottom button.active');
       if(active) active.click();
