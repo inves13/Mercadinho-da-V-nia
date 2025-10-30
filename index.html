@@ -78,10 +78,8 @@
 
     <!-- Tela de Cadastro -->
     <div id="registerView">
-      <input id="regName" placeholder="Nome completo" />
       <input id="regEmail" placeholder="E-mail" />
       <input id="regPassword" type="password" placeholder="Senha" />
-      <input id="regImagePath" placeholder="Imagem (ex: images/usuario.png)" />
       <button id="btnRegister">Cadastrar e entrar</button>
       <div class="small">Já tem conta? <a href="#" id="showLogin">Entrar</a></div>
     </div>
@@ -131,15 +129,13 @@
 
     // cadastro
     $('btnRegister').onclick = async () => {
-      const name = $('regName').value.trim();
       const email = $('regEmail').value.trim();
       const pass = $('regPassword').value;
-      const image = $('regImagePath').value.trim() || 'images/usuario.png';
-      if (!name || !email || !pass) return alert('Preencha todos os campos');
+      if (!email || !pass) return alert('Preencha todos os campos');
 
       try {
         const c = await auth.createUserWithEmailAndPassword(email, pass);
-        await db.ref('users/' + c.user.uid).set({ name, email, image });
+        await db.ref('users/' + c.user.uid).set({ email });
         window.location.href = 'mercado.html';
       } catch (err) {
         alert(err.message);
