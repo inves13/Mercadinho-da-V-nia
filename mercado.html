@@ -17,11 +17,22 @@
     input,button{padding:8px;border-radius:8px;border:1px solid #e6e6e6}
     button{cursor:pointer}
     .row{display:flex;gap:10px;align-items:center}
-    nav.bottom{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:8px 0}
+    nav.bottom{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:8px 0;z-index:10}
     nav.bottom button{background:transparent;border:none;font-weight:700;display:flex;flex-direction:column;align-items:center;font-size:14px;color:#2e8b57}
     nav.bottom span{font-size:20px}
     .hidden{display:none}
     .small{font-size:13px;color:#666}
+
+    /* --- Correções --- */
+    #pageProducts {
+      margin-bottom: 120px; /* evita o botão e total ficarem escondidos */
+    }
+
+    input[type="number"] {
+      width:80px;
+      margin-top:8px;
+      text-align:center;
+    }
   </style>
 </head>
 <body>
@@ -154,13 +165,13 @@
           <img src="${p.image}" alt="${p.name}" />
           <div style="font-weight:700">${p.name}</div>
           <div>R$ ${p.price.toFixed(2)}</div>
-          <input type="number" min="0" placeholder="Qtd" data-id="${p.id}" style="width:80px;margin-top:8px" />
+          <input type="number" step="0.01" min="0" placeholder="Qtd (kg)" data-id="${p.id}" />
           <div style="margin-top:8px"><b>Subtotal:</b> R$ <span data-sub="${p.id}">0.00</span></div>
         `;
         list.appendChild(div);
       });
       list.querySelectorAll('input').forEach(inp=>{
-        inp.oninput = () => { cart[inp.dataset.id] = +inp.value || 0; updateTotal(); }
+        inp.oninput = () => { cart[inp.dataset.id] = parseFloat(inp.value) || 0; updateTotal(); }
       });
       updateTotal();
     }
@@ -182,7 +193,7 @@
       const items = products.filter(p => (cart[p.id]||0) > 0).map(p => ({ name:p.name, qty: cart[p.id], price: p.price, subtotal: p.price * cart[p.id] }));
       if(items.length === 0) return alert('Nenhum produto selecionado');
       const total = items.reduce((a,b)=>a+b.subtotal,0);
-      const ref = await db.ref('orders/'+currentUser.uid).push({items, total, createdAt: new Date().toISOString()});
+      await db.ref('orders/'+currentUser.uid).push({items, total, createdAt: new Date().toISOString()});
       alert('Pedido salvo! Você pode verificar ou cancelar no "Extrato".');
       cart = {}; renderProducts(); loadOrders();
     };
