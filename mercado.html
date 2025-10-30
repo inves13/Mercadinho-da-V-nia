@@ -134,7 +134,18 @@
     .small{font-size:13px;color:var(--muted)}
 
     /* Total & botão */
-    .checkout-row{display:flex;align-items:center;gap:12px;margin-top:10px}
+    .checkout-row{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-top:10px;
+      /* FIX: deixar botão visível acima do nav */
+      position: sticky;
+      bottom: calc(var(--nav-height) + 12px);
+      background:#fff;
+      padding:12px 0 0 0;
+      z-index:1000;
+    }
     .total-box{font-weight:800;color:#183a2a}
     .btn{
       padding:10px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:700;
@@ -319,7 +330,6 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
   <script>
-    // === Config Firebase (mantive igual) ===
     var firebaseConfig = {
       apiKey: "AIzaSyBNNCCbI8obZEOGtp1EcT7wn-_h6X_EPMY",
       authDomain: "ganheinvista.firebaseapp.com",
@@ -334,7 +344,6 @@
     const auth = firebase.auth();
     const db = firebase.database();
 
-    // === Produtos (mantive igual) ===
     const products = [
       {id:'banana',name:'Banana (dúzia)',price:8.50,image:'2.png'},
       {id:'maca',name:'Maçã (kg)',price:7.50,image:'3.png'},
@@ -360,25 +369,17 @@
       {id:'quiabo',name:'Quiabo (kg)',price:7.30,image:'20.png'}
     ];
 
-    // === Estado ===
     let currentUser = null;
     let cart = {};
 
     const $ = id => document.getElementById(id);
 
-    // === Util: format currency BRL (segurança: calcular com toFixed) ===
     function formatBRL(val){
-      // work digit-by-digit to avoid floating imprecision when necessary
       return Number(val || 0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
     }
 
-    // === Auth listener (mantive o comportamento) ===
     auth.onAuthStateChanged(async u=>{
-      if(!u){
-        // se não logado, redireciona para index (como no seu código)
-        window.location.href='index.html';
-        return;
-      }
+      if(!u){ window.location.href='index.html'; return; }
       currentUser = u;
       const snap = await db.ref('users/'+u.uid).once('value');
       const p = snap.val() || {};
@@ -390,10 +391,8 @@
       loadOrders();
     });
 
-    // logout
     $('btnLogout').onclick = ()=> auth.signOut();
 
-    // === Render produtos (mantive inputs e funcionalidade) ===
     function renderProducts(){
       const list = $('productsList');
       list.innerHTML = '';
@@ -412,23 +411,19 @@
         list.appendChild(div);
       });
 
-      // associa eventos
       list.querySelectorAll('input[type="number"]').forEach(inp=>{
         inp.addEventListener('input', () => {
-          // parse digit by digit to be safe
           const v = inp.value;
           const parsed = parseFloat(v.replace(',', '.')) || 0;
           cart[inp.dataset.id] = parsed;
           updateTotal();
         });
-        // UX: select value on focus
         inp.addEventListener('focus', () => inp.select());
       });
 
       updateTotal();
     }
 
-    // === Atualiza total e subtotais ===
     function updateTotal(){
       let t = 0;
       products.forEach(p=>{
@@ -441,7 +436,6 @@
       $('cartTotal').textContent = formatBRL(t);
     }
 
-    // === Checkout (mesma lógica) ===
     $('btnCheckout').onclick = async () => {
       if(!currentUser) return alert('Faça login antes');
       const items = products.filter(p => (cart[p.id]||0) > 0).map(p => ({ name:p.name, qty: cart[p.id], price: p.price, subtotal: p.price * cart[p.id] }));
@@ -452,7 +446,6 @@
       cart = {}; renderProducts(); loadOrders();
     };
 
-    // === Load orders ===
     async function loadOrders(){
       if(!currentUser) return;
       const out = $('ordersList');
@@ -484,23 +477,19 @@
       });
     }
 
-    // === Copiar Pix ===
     $('btnCopyPix').onclick = ()=> {
       const k = $('pixKey').textContent;
       navigator.clipboard.writeText(k).then(()=> {
-        // feedback visual pequeno
         const original = $('btnCopyPix').textContent;
         $('btnCopyPix').textContent = 'Copiado ✔';
         setTimeout(()=> $('btnCopyPix').textContent = original, 1500);
       });
     };
 
-    // === Navegação inferior (melhorei highlight e transição) ===
     const navButtons = document.querySelectorAll('nav.bottom button');
     navButtons.forEach(b=>{
       b.addEventListener('click', () => {
         const page = b.dataset.page;
-        // esconder todas
         ['pageProducts','pageDeposit','pageOrders','pageProfile'].forEach(id=> {
           const el = document.getElementById(id);
           if(el){
@@ -510,7 +499,6 @@
           }
         });
 
-        // ativa visual do botão
         navButtons.forEach(x=>{
           x.classList.remove('active');
           x.setAttribute('aria-pressed','false');
@@ -518,7 +506,6 @@
         b.classList.add('active');
         b.setAttribute('aria-pressed','true');
 
-        // mostra a selecionada
         const showId = page === 'products' ? 'pageProducts'
                       : page === 'deposit' ? 'pageDeposit'
                       : page === 'orders' ? 'pageOrders'
@@ -526,7 +513,6 @@
         const showEl = document.getElementById(showId);
         if(showEl){
           showEl.classList.remove('hidden');
-          // anima entrada
           requestAnimationFrame(()=> {
             showEl.style.opacity = 0;
             showEl.style.transform = 'translateY(8px)';
@@ -540,7 +526,6 @@
       });
     });
 
-    // acessibilidade: tecla 1..4 muda páginas
     document.addEventListener('keydown', (e)=>{
       if(e.key === '1') navButtons[0].click();
       if(e.key === '2') navButtons[1].click();
@@ -548,7 +533,6 @@
       if(e.key === '4') navButtons[3].click();
     });
 
-    // ativa primeiro botão (garante highlight ao carregar)
     (function initNavActive(){
       const active = document.querySelector('nav.bottom button.active');
       if(active) active.click();
