@@ -4,132 +4,322 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Mercadinho da Vani</title>
+
+  <!-- Fonte -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root{--primary:#2e8b57;--accent:#ffd400;--bg:#f6f7f3}
-    body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:#111}
-    .container{max-width:980px;margin:16px auto;padding:12px}
-    header{display:flex;align-items:center;gap:12px}
-    header h1{margin:0;font-size:20px}
-    .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,0.06);margin-bottom:12px}
-    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-    .product{text-align:center;padding:10px;border-radius:10px;border:1px solid #eee}
-    .product img{width:100%;height:120px;object-fit:cover;border-radius:8px}
-    input,button{padding:8px;border-radius:8px;border:1px solid #e6e6e6}
-    button{cursor:pointer}
-    .row{display:flex;gap:10px;align-items:center}
-    nav.bottom{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:8px 0;z-index:10}
-    nav.bottom button{background:transparent;border:none;font-weight:700;display:flex;flex-direction:column;align-items:center;font-size:14px;color:#2e8b57}
-    nav.bottom span{font-size:20px}
-    .hidden{display:none}
-    .small{font-size:13px;color:#666}
-
-    /* --- Correções --- */
-    #pageProducts {
-      margin-bottom: 120px; /* evita o botão e total ficarem escondidos */
+    :root{
+      --primary:#2e8b57;
+      --accent:#ffd400;
+      --bg:#ffffff;
+      --muted:#8b8b8b;
+      --card-shadow: 0 10px 30px rgba(46,139,87,0.08);
+      --glass: rgba(255,255,255,0.7);
+      --nav-height:72px;
     }
 
-    input[type="number"] {
-      width:80px;
+    /* Reset / base */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Arial, sans-serif;
+      background:linear-gradient(180deg,#f8fbf8 0%, #ffffff 60%);
+      color:#111;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-bottom: calc(var(--nav-height) + 12px);
+    }
+
+    .app{
+      max-width:980px;
+      margin:14px auto;
+      padding:12px;
+    }
+
+    /* Header */
+    header{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px;
+      border-radius:14px;
+      background: linear-gradient(90deg, rgba(46,139,87,1) 0%, rgba(255,212,64,1) 100%);
+      color:white;
+      box-shadow: 0 8px 30px rgba(46,139,87,0.12);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .brand{
+      width:56px;
+      height:56px;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      box-shadow:0 6px 18px rgba(0,0,0,0.12);
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(4px);
+      font-size:20px;
+    }
+
+    header h1{margin:0;font-size:18px;line-height:1;color:#fff}
+    header .small{font-size:13px;color:rgba(255,255,255,0.90);opacity:0.95}
+
+    /* Card */
+    .card{
+      background:#fff;
+      border-radius:14px;
+      padding:14px;
+      box-shadow:var(--card-shadow);
+      margin:14px 0;
+      transition:transform .22s ease, box-shadow .22s ease;
+    }
+    .card--flat { box-shadow: none; }
+
+    /* Produtos grid */
+    .products-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
+      gap:12px;
       margin-top:8px;
+    }
+
+    .product{
       text-align:center;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid #f0f0f0;
+      transition:transform .18s ease, box-shadow .18s ease;
+      background: linear-gradient(180deg, #ffffff, #fbfffb);
     }
 
-    /* --- Botão flutuante WhatsApp --- */
-    #whatsapp-flutuante {
+    .product:hover{
+      transform:translateY(-6px) scale(1.01);
+      box-shadow: 0 14px 30px rgba(46,139,87,0.06);
+      z-index:2;
+    }
+
+    .product img{
+      width:100%;
+      height:120px;
+      object-fit:cover;
+      border-radius:10px;
+      display:block;
+      margin-bottom:8px;
+      background:#f6f6f6;
+    }
+
+    .product .title{font-weight:700;margin-bottom:6px;color:#183a2a}
+    .product .price{font-weight:600;color:var(--primary);margin-bottom:8px}
+
+    input[type="number"]{
+      width:94px;
+      border-radius:10px;
+      border:1px solid #e9e9e9;
+      padding:8px;
+      text-align:center;
+      outline:none;
+      transition:box-shadow .12s ease, border-color .12s ease;
+    }
+    input[type="number"]:focus{
+      box-shadow:0 6px 18px rgba(46,139,87,0.08);
+      border-color:var(--primary);
+    }
+
+    .row{display:flex;gap:10px;align-items:center}
+    .small{font-size:13px;color:var(--muted)}
+
+    /* Total & botão */
+    .checkout-row{display:flex;align-items:center;gap:12px;margin-top:10px}
+    .total-box{font-weight:800;color:#183a2a}
+    .btn{
+      padding:10px 16px;border-radius:12px;border:none;cursor:pointer;font-weight:700;
+      background:linear-gradient(90deg,var(--primary),var(--accent));
+      color:#111;
+      box-shadow:0 8px 20px rgba(46,139,87,0.12);
+      transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn.secondary{
+      background:transparent;
+      border:1px solid #eee;
+      color:#333;
+      box-shadow:none;
+    }
+
+    /* PIX block */
+    .pix-block{border-radius:12px;padding:12px;color:#fff; background: linear-gradient(90deg,var(--primary),#2fb86a); word-break:break-word;}
+
+    /* Orders list */
+    #ordersList .card{margin:8px 0;padding:10px;border-radius:12px}
+
+    /* Profile */
+    #profileImage{width:92px;height:92px;border-radius:12px;object-fit:cover;box-shadow:0 8px 20px rgba(0,0,0,0.06)}
+
+    /* Bottom nav */
+    nav.bottom{
+      position:fixed;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      height:var(--nav-height);
+      border-radius:16px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+      display:flex;
+      justify-content:space-around;
+      align-items:center;
+      padding:8px 12px;
+      z-index:1200;
+      box-shadow: 0 20px 40px rgba(20,60,30,0.08);
+      backdrop-filter: blur(6px);
+    }
+
+    nav.bottom button{
+      background:transparent;border:none;display:flex;flex-direction:column;align-items:center;font-weight:700;font-size:13px;color:var(--muted);cursor:pointer;
+    }
+    nav.bottom button .icon{
+      width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:4px;
+      transition:all .14s ease;
+    }
+    nav.bottom button.active{color:var(--primary)}
+    nav.bottom button.active .icon{
+      background: linear-gradient(90deg,var(--primary),var(--accent));
+      color:#111;
+      transform:translateY(-6px) scale(1.05);
+      box-shadow: 0 8px 22px rgba(46,139,87,0.16);
+    }
+
+    /* WhatsApp floating */
+    #whatsapp-flutuante{
       position: fixed;
-      width: 60px;
-      height: 60px;
-      bottom: 85px; /* ajustado para não cobrir o menu inferior */
-      right: 20px;
-      background-color: #25d366;
-      border-radius: 50%;
-      text-align: center;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-      z-index: 999;
-      transition: transform 0.2s;
+      width: 64px;
+      height: 64px;
+      bottom: calc(var(--nav-height) + 26px);
+      right: 18px;
+      background: linear-gradient(180deg,#25d366,#06b84b);
+      border-radius: 16px;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.14);
+      z-index:1300;
+      transition: transform .12s ease;
+    }
+    #whatsapp-flutuante img{width:34px;height:34px}
+    #whatsapp-flutuante:hover{transform:translateY(-6px)}
+
+    /* small screens */
+    @media (max-width:520px){
+      .product img{height:100px}
+      .brand{width:48px;height:48px;font-size:18px}
+      header h1{font-size:16px}
+      nav.bottom{left:8px;right:8px}
+      .products-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+      input[type="number"]{width:78px}
+      .container{padding:8px}
     }
 
-    #whatsapp-flutuante:hover {
-      transform: scale(1.1);
+    /* Page transition */
+    .page{
+      transition:opacity .22s ease, transform .22s ease;
     }
-
-    #whatsapp-flutuante img {
-      width: 35px;
-      height: 35px;
-      margin-top: 12px;
-    }
+    .hidden{display:none}
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="app">
     <header>
-      <div style="width:44px;height:44px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">V</div>
+      <div class="brand">V</div>
       <div>
         <h1>Mercadinho da Vani</h1>
         <div class="small" id="greeting">Carregando...</div>
       </div>
       <div style="margin-left:auto">
-        <button id="btnLogout">Sair</button>
+        <button id="btnLogout" class="btn secondary" style="padding:8px 12px">Sair</button>
       </div>
     </header>
 
     <section id="dashboard">
-      <div id="pageProducts" class="card">
+      <!-- Produtos -->
+      <div id="pageProducts" class="card page">
         <h3>Produtos</h3>
         <div id="productsList" class="products-grid"></div>
-        <div class="row" style="margin-top:12px">
-          <div style="font-weight:700">Total: R$ <span id="cartTotal">0.00</span></div>
-          <div style="margin-left:auto"><button id="btnCheckout">Finalizar compra</button></div>
+
+        <div class="checkout-row" style="margin-top:12px">
+          <div class="total-box">Total: R$ <span id="cartTotal">0.00</span></div>
+          <div style="margin-left:auto">
+            <button id="btnCheckout" class="btn">Finalizar compra</button>
+          </div>
         </div>
       </div>
 
-      <div id="pageDeposit" class="card hidden" style="text-align:center">
+      <!-- Depósito -->
+      <div id="pageDeposit" class="card page hidden" style="text-align:center">
         <h3>Depósito via Pix</h3>
-        <div style="background:var(--primary);color:#fff;padding:14px;border-radius:12px;margin:12px 0;word-break:break-all">
+        <div class="pix-block" style="margin:12px 0;">
           <b>Chave Pix:</b><br>
           <span id="pixKey">00020126810014br.gov.bcb.pix01367afe98b1-ad17-4884-be4d-9a77d0d107ca0219mercadinho da Vania5204000053039865802BR5919Luis Nunes de Jesus6009Sao Paulo610901227-20062230519daqr727713149873566630468CD</span>
         </div>
-        <button id="btnCopyPix" style="background:var(--accent);border:none;padding:10px 18px;font-weight:700;border-radius:8px;cursor:pointer">Copiar chave Pix</button>
+        <button id="btnCopyPix" class="btn" style="background:linear-gradient(90deg,var(--accent),#ffd84a);">Copiar chave Pix</button>
       </div>
 
-      <div id="pageOrders" class="card hidden">
+      <!-- Pedidos -->
+      <div id="pageOrders" class="card page hidden">
         <h3>Extrato de Pedidos</h3>
         <div id="ordersList">Nenhum pedido encontrado.</div>
       </div>
 
-      <div id="pageProfile" class="card hidden">
+      <!-- Perfil -->
+      <div id="pageProfile" class="card page hidden">
         <h3>Perfil</h3>
-        <div class="row">
-          <img id="profileImage" src="1.png" alt="foto" style="width:92px;height:92px;border-radius:10px;object-fit:cover" />
+        <div class="row" style="align-items:flex-start">
+          <img id="profileImage" src="1.png" alt="foto" />
           <div style="margin-left:12px">
             <div id="profileName" style="font-weight:700"></div>
             <div id="profileEmail" class="small"></div>
+            <div style="margin-top:8px">
+              <button id="btnEditProfile" class="btn secondary">Editar perfil</button>
+            </div>
           </div>
         </div>
       </div>
     </section>
   </div>
 
-  <nav class="bottom">
-    <button data-page="products"><span>🍎</span>Produtos</button>
-    <button data-page="deposit"><span>💰</span>Depósito</button>
-    <button data-page="orders"><span>📜</span>Extrato</button>
-    <button data-page="profile"><span>👤</span>Perfil</button>
+  <!-- Bottom nav -->
+  <nav class="bottom" role="navigation" aria-label="Menu inferior">
+    <button data-page="products" class="active" aria-pressed="true">
+      <div class="icon">🍎</div>
+      <div>Produtos</div>
+    </button>
+    <button data-page="deposit">
+      <div class="icon">💰</div>
+      <div>Depósito</div>
+    </button>
+    <button data-page="orders">
+      <div class="icon">📜</div>
+      <div>Extrato</div>
+    </button>
+    <button data-page="profile">
+      <div class="icon">👤</div>
+      <div>Perfil</div>
+    </button>
   </nav>
 
-  <!-- Botão flutuante WhatsApp -->
-  <a href="https://wa.me/5575999537162?text=Olá,+preciso+de+ajuda+com+meu+pedido+no+Mercadinho+da+Vani" 
-     target="_blank" 
-     id="whatsapp-flutuante"
-     title="Suporte no WhatsApp">
+  <!-- WhatsApp floating -->
+  <a id="whatsapp-flutuante" href="https://wa.me/5575999537162?text=Olá,+preciso+de+ajuda+com+meu+pedido+no+Mercadinho+da+Vani" target="_blank" title="Suporte no WhatsApp" rel="noopener">
     <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
   </a>
 
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
   <script>
+    // === Config Firebase (mantive igual) ===
     var firebaseConfig = {
       apiKey: "AIzaSyBNNCCbI8obZEOGtp1EcT7wn-_h6X_EPMY",
       authDomain: "ganheinvista.firebaseapp.com",
@@ -144,6 +334,7 @@
     const auth = firebase.auth();
     const db = firebase.database();
 
+    // === Produtos (mantive igual) ===
     const products = [
       {id:'banana',name:'Banana (dúzia)',price:8.50,image:'2.png'},
       {id:'maca',name:'Maçã (kg)',price:7.50,image:'3.png'},
@@ -169,12 +360,25 @@
       {id:'quiabo',name:'Quiabo (kg)',price:7.30,image:'20.png'}
     ];
 
+    // === Estado ===
     let currentUser = null;
     let cart = {};
+
     const $ = id => document.getElementById(id);
 
+    // === Util: format currency BRL (segurança: calcular com toFixed) ===
+    function formatBRL(val){
+      // work digit-by-digit to avoid floating imprecision when necessary
+      return Number(val || 0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+    }
+
+    // === Auth listener (mantive o comportamento) ===
     auth.onAuthStateChanged(async u=>{
-      if(!u){ window.location.href='index.html'; return; }
+      if(!u){
+        // se não logado, redireciona para index (como no seu código)
+        window.location.href='index.html';
+        return;
+      }
       currentUser = u;
       const snap = await db.ref('users/'+u.uid).once('value');
       const p = snap.val() || {};
@@ -186,8 +390,10 @@
       loadOrders();
     });
 
+    // logout
     $('btnLogout').onclick = ()=> auth.signOut();
 
+    // === Render produtos (mantive inputs e funcionalidade) ===
     function renderProducts(){
       const list = $('productsList');
       list.innerHTML = '';
@@ -196,31 +402,46 @@
         div.className = 'product';
         div.innerHTML = `
           <img src="${p.image}" alt="${p.name}" />
-          <div style="font-weight:700">${p.name}</div>
-          <div>R$ ${p.price.toFixed(2)}</div>
-          <input type="number" step="0.01" min="0" placeholder="Qtd (kg)" data-id="${p.id}" />
-          <div style="margin-top:8px"><b>Subtotal:</b> R$ <span data-sub="${p.id}">0.00</span></div>
+          <div class="title">${p.name}</div>
+          <div class="price">R$ ${formatBRL(p.price)}</div>
+          <div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:6px;">
+            <input type="number" step="0.01" min="0" placeholder="Qtd" data-id="${p.id}" />
+          </div>
+          <div style="margin-top:8px;font-size:13px"><b>Subtotal:</b> R$ <span data-sub="${p.id}">0.00</span></div>
         `;
         list.appendChild(div);
       });
-      list.querySelectorAll('input').forEach(inp=>{
-        inp.oninput = () => { cart[inp.dataset.id] = parseFloat(inp.value) || 0; updateTotal(); }
+
+      // associa eventos
+      list.querySelectorAll('input[type="number"]').forEach(inp=>{
+        inp.addEventListener('input', () => {
+          // parse digit by digit to be safe
+          const v = inp.value;
+          const parsed = parseFloat(v.replace(',', '.')) || 0;
+          cart[inp.dataset.id] = parsed;
+          updateTotal();
+        });
+        // UX: select value on focus
+        inp.addEventListener('focus', () => inp.select());
       });
+
       updateTotal();
     }
 
+    // === Atualiza total e subtotais ===
     function updateTotal(){
       let t = 0;
       products.forEach(p=>{
-        const q = cart[p.id]||0;
-        const sub = q * p.price;
+        const q = cart[p.id] || 0;
+        const sub = (q * p.price);
         const el = document.querySelector('[data-sub="'+p.id+'"]');
-        if(el) el.textContent = sub.toFixed(2);
+        if(el) el.textContent = formatBRL(sub);
         t += sub;
       });
-      $('cartTotal').textContent = t.toFixed(2);
+      $('cartTotal').textContent = formatBRL(t);
     }
 
+    // === Checkout (mesma lógica) ===
     $('btnCheckout').onclick = async () => {
       if(!currentUser) return alert('Faça login antes');
       const items = products.filter(p => (cart[p.id]||0) > 0).map(p => ({ name:p.name, qty: cart[p.id], price: p.price, subtotal: p.price * cart[p.id] }));
@@ -231,6 +452,7 @@
       cart = {}; renderProducts(); loadOrders();
     };
 
+    // === Load orders ===
     async function loadOrders(){
       if(!currentUser) return;
       const out = $('ordersList');
@@ -241,11 +463,11 @@
       out.innerHTML = '';
       Object.entries(v).forEach(([key,o])=>{
         const card = document.createElement('div'); card.className='card';
-        const itemsHtml = o.items.map(i=> `${i.qty}x ${i.name} — R$ ${i.subtotal.toFixed(2)}` ).join('<br>');
+        const itemsHtml = o.items.map(i=> `${i.qty}x ${i.name} — R$ ${formatBRL(i.subtotal)}` ).join('<br>');
         card.innerHTML = `
           <b>${new Date(o.createdAt).toLocaleString()}</b><br>
           ${itemsHtml}<br>
-          <b>Total:</b> R$ ${o.total.toFixed(2)}<br>
+          <b>Total:</b> R$ ${formatBRL(o.total)}<br>
           <button data-id="${key}" class="btnCancel" style="margin-top:8px;background:#f33;color:#fff;border:none;padding:6px 10px;border-radius:8px">Cancelar Pedido</button>
         `;
         out.appendChild(card);
@@ -262,21 +484,76 @@
       });
     }
 
+    // === Copiar Pix ===
     $('btnCopyPix').onclick = ()=> {
       const k = $('pixKey').textContent;
-      navigator.clipboard.writeText(k).then(()=> alert('Chave Pix copiada!'));
+      navigator.clipboard.writeText(k).then(()=> {
+        // feedback visual pequeno
+        const original = $('btnCopyPix').textContent;
+        $('btnCopyPix').textContent = 'Copiado ✔';
+        setTimeout(()=> $('btnCopyPix').textContent = original, 1500);
+      });
     };
 
-    document.querySelectorAll('nav.bottom button').forEach(b=>{
-      b.onclick = ()=>{
+    // === Navegação inferior (melhorei highlight e transição) ===
+    const navButtons = document.querySelectorAll('nav.bottom button');
+    navButtons.forEach(b=>{
+      b.addEventListener('click', () => {
         const page = b.dataset.page;
-        ['pageProducts','pageDeposit','pageOrders','pageProfile'].forEach(id=> $(id).classList.add('hidden'));
-        if(page === 'products') $('pageProducts').classList.remove('hidden');
-        if(page === 'deposit') $('pageDeposit').classList.remove('hidden');
-        if(page === 'orders') $('pageOrders').classList.remove('hidden');
-        if(page === 'profile') $('pageProfile').classList.remove('hidden');
-      };
+        // esconder todas
+        ['pageProducts','pageDeposit','pageOrders','pageProfile'].forEach(id=> {
+          const el = document.getElementById(id);
+          if(el){
+            el.classList.add('hidden');
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(6px)';
+          }
+        });
+
+        // ativa visual do botão
+        navButtons.forEach(x=>{
+          x.classList.remove('active');
+          x.setAttribute('aria-pressed','false');
+        });
+        b.classList.add('active');
+        b.setAttribute('aria-pressed','true');
+
+        // mostra a selecionada
+        const showId = page === 'products' ? 'pageProducts'
+                      : page === 'deposit' ? 'pageDeposit'
+                      : page === 'orders' ? 'pageOrders'
+                      : 'pageProfile';
+        const showEl = document.getElementById(showId);
+        if(showEl){
+          showEl.classList.remove('hidden');
+          // anima entrada
+          requestAnimationFrame(()=> {
+            showEl.style.opacity = 0;
+            showEl.style.transform = 'translateY(8px)';
+            requestAnimationFrame(()=> {
+              showEl.style.transition = 'opacity .22s ease, transform .22s ease';
+              showEl.style.opacity = 1;
+              showEl.style.transform = 'translateY(0)';
+            });
+          });
+        }
+      });
     });
+
+    // acessibilidade: tecla 1..4 muda páginas
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === '1') navButtons[0].click();
+      if(e.key === '2') navButtons[1].click();
+      if(e.key === '3') navButtons[2].click();
+      if(e.key === '4') navButtons[3].click();
+    });
+
+    // ativa primeiro botão (garante highlight ao carregar)
+    (function initNavActive(){
+      const active = document.querySelector('nav.bottom button.active');
+      if(active) active.click();
+    })();
+
   </script>
 </body>
 </html>
