@@ -27,6 +27,7 @@
       border-radius: 12px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
       text-align: center;
+      position: relative;
     }
     .logo {
       width: 120px;
@@ -41,24 +42,41 @@
       margin-bottom: 10px;
       color: var(--primary);
     }
-    input, button {
+    input {
       width: 100%;
       padding: 10px;
       margin-top: 8px;
       border-radius: 8px;
       border: 1px solid #e6e6e6;
       font-size: 15px;
+      box-sizing: border-box;
+    }
+    .password-container {
+      position: relative;
+      width: 100%;
+    }
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 16px;
+      color: #777;
     }
     button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: none;
       background: var(--primary);
       color: #fff;
-      border: none;
       font-weight: 700;
       cursor: pointer;
+      font-size: 15px;
     }
-    button:hover {
-      opacity: 0.9;
-    }
+    button:hover { opacity: 0.9; }
     a {
       color: var(--primary);
       text-decoration: none;
@@ -78,8 +96,13 @@
 
     <!-- Tela de Cadastro -->
     <div id="registerView">
+      <input id="regName" placeholder="Nome completo" />
+      <input id="regPhone" placeholder="Telefone com DDD (11 números)" maxlength="11" />
       <input id="regEmail" placeholder="E-mail" />
-      <input id="regPassword" type="password" placeholder="Senha" />
+      <div class="password-container">
+        <input id="regPassword" type="password" placeholder="Senha" />
+        <span class="toggle-password" onclick="togglePassword('regPassword', this)">👁️</span>
+      </div>
       <button id="btnRegister">Cadastrar e entrar</button>
       <div class="small">Já tem conta? <a href="#" id="showLogin">Entrar</a></div>
     </div>
@@ -87,7 +110,10 @@
     <!-- Tela de Login -->
     <div id="loginView" style="display:none">
       <input id="loginEmail" placeholder="E-mail" />
-      <input id="loginPassword" type="password" placeholder="Senha" />
+      <div class="password-container">
+        <input id="loginPassword" type="password" placeholder="Senha" />
+        <span class="toggle-password" onclick="togglePassword('loginPassword', this)">👁️</span>
+      </div>
       <button id="btnLogin">Entrar</button>
       <div class="small">Não tem conta? <a href="#" id="showRegister">Cadastrar</a></div>
     </div>
@@ -115,7 +141,7 @@
     const db = firebase.database();
     const $ = id => document.getElementById(id);
 
-    // alternar telas
+    // Alternar telas
     $('showLogin').onclick = e => {
       e.preventDefault();
       $('registerView').style.display = 'none';
@@ -127,25 +153,67 @@
       $('registerView').style.display = 'block';
     }
 
-    // cadastro
+    // Mostrar/ocultar senha
+    function togglePassword(id, el) {
+      const input = $(id);
+      if (input.type === 'password') {
+        input.type = 'text';
+        el.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        el.textContent = '👁️';
+      }
+    }
+
+    // Permitir apenas números no telefone
+    $('regPhone').addEventListener('input', e => {
+      e.target.value = e.target.value.replace(/\D/g, '');
+    });
+
+    // Cadastro com validação
     $('btnRegister').onclick = async () => {
+      const name = $('regName').value.trim();
+      const phone = $('regPhone').value.trim();
       const email = $('regEmail').value.trim();
       const pass = $('regPassword').value;
-      if (!email || !pass) return alert('Preencha todos os campos');
+
+      if (!name || !phone || !email || !pass)
+        return alert('Preencha todos os campos corretamente.');
+
+      if (phone.length !== 11)
+        return alert('O número de telefone deve ter 11 dígitos (DDD + 9 + número). Exemplo: 81987654321');
 
       try {
         const c = await auth.createUserWithEmailAndPassword(email, pass);
-        await db.ref('users/' + c.user.uid).set({ email });
+
+        // Salvar no Firebase Database para perfil
+        await db.ref('users/' + c.user.uid).set({
+          name: name,
+          telefone: phone,
+          email: email,
+          photoURL: 'avatar.png'
+        });
+
+        // Atualizar displayName e photoURL no Auth
+        await c.user.updateProfile({
+          displayName: name,
+          photoURL: 'avatar.png'
+        });
+
+        // Redirecionar para a página principal
         window.location.href = 'mercado.html';
       } catch (err) {
         alert(err.message);
       }
     };
 
-    // login
+    // Login
     $('btnLogin').onclick = async () => {
       try {
-        await auth.signInWithEmailAndPassword($('loginEmail').value, $('loginPassword').value);
+        await auth.signInWithEmailAndPassword(
+          $('loginEmail').value,
+          $('loginPassword').value
+        );
         window.location.href = 'mercado.html';
       } catch (err) {
         alert(err.message);
