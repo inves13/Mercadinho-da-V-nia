@@ -120,6 +120,7 @@
           <div style="margin-left:12px">
             <div id="profileName" style="font-weight:700"></div>
             <div id="profileEmail" class="small"></div>
+            <div id="profilePhone" class="small"></div> <!-- Adicionado para telefone -->
             <div style="margin-top:8px">
               <button id="btnEditProfile" class="btn secondary">Editar perfil</button>
             </div>
@@ -212,6 +213,7 @@
       $('greeting').textContent = 'Bem-vindo, ' + (p.name || '');
       $('profileName').textContent = p.name || '';
       $('profileEmail').textContent = p.email || '';
+      $('profilePhone').textContent = p.phone || 'Telefone não informado'; // Exibindo telefone
       $('profileImage').src = p.photoURL || 'avatar.png';
 
       renderProducts();
